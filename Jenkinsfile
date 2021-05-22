@@ -1,38 +1,22 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage("Build"){
-            steps{
-                echo "========executing Build========"
-            }
-            post{
-                always{
-                    echo "========always block executed========"
-                }
-                success{
-                    echo "========Build executed successfully========"
-                }
-                failure{
-                    echo "========Build execution failed========"
-                }
-            }
-        }
-        stage("Test"){
-            steps{
-                sh 'ls -a'
-            }
-        }
-
+    parameters {
+        string(name: 'NAME', description: 'Please tell me your name')
+        choice(name: 'GENDER', choices: ['Male', 'Female'], description: 'Choose Gender')
     }
-    post{
-        always{
-            echo "========always========"
+    stages {
+        stage('Printing name') {
+            steps {
+                script {
+                    def name = "${params.NAME}"
+                    def gender = "${params.GENDER}"
+                    if(gender == "Male") {
+                        echo "Mr. $name"    
+                    } else {
+                        echo "Mrs. $name"
+                    }
+                }
+            }
         }
-        success{
-            echo "========pipeline executed successfully ========"
-        }
-        failure{
-            echo "========pipeline execution failed========"
-        }
-    }
+   }
 }
